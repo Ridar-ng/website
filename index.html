@@ -36,6 +36,11 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <!-- Development Banner -->
+  <div class="bg-yellow-400 text-center py-2 px-4">
+    <p class="text-black font-medium">⚠️ This site is currently under development. Some features may not be fully functional. ⚠️</p>
+  </div>
+
   <!-- Header -->
   <header class="w-full py-3 px-6 flex items-center justify-between bg-purple-950">
     <a href="/" class="flex items-center">
@@ -72,15 +77,15 @@
             </p>
             
             <div class="flex flex-wrap gap-3 mb-6">
-              <button class="bg-white text-purple-950 hover:bg-gray-100 px-4 py-2 rounded-full font-medium text-sm">
+              <a href="#how-it-works" class="bg-white text-purple-950 hover:bg-gray-100 px-4 py-2 rounded-full font-medium text-sm inline-block" onclick="activateTab('client', 'role-tab')">
                 Stika for Advertisers
-              </button>
-              <button class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm">
+              </a>
+              <a href="#how-it-works" class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm inline-block" onclick="activateTab('agent', 'role-tab')">
                 I Have an Agency
-              </button>
-              <button class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm">
+              </a>
+              <a href="#how-it-works" class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm inline-block" onclick="activateTab('advertiser', 'role-tab')">
                 I am Keke Rider
-              </button>
+              </a>
             </div>
             
             <div class="flex items-center">
@@ -278,7 +283,7 @@
     </section>
 
     <!-- How It Works Section -->
-    <section class="how-it-works-section py-16 px-4 md:px-8">
+    <section class="how-it-works-section py-16 px-4 md:px-8" id="how-it-works">
       <div class="container mx-auto">
         <div class="text-center mb-10">
           <h2 class="text-3xl font-bold mb-3">How Stika Works</h2>
@@ -288,7 +293,7 @@
         <div class="max-w-4xl mx-auto">
           <!-- Role Tabs -->
           <div class="role-tabs flex-wrap">
-            <button class="role-tab active" data-role="rider">For Client</button>
+            <button class="role-tab active" data-role="client">For Client</button>
             <button class="role-tab" data-role="agent">For Agents</button>
             <button class="role-tab" data-role="advertiser">For Keke Riders</button>
           </div>
@@ -298,7 +303,7 @@
             <div class="vertical-line"></div>
             
             <!-- Client Timeline (Default Active) -->
-            <div class="timeline-content active" id="rider-timeline">
+            <div class="timeline-content active" id="client-timeline">
               <!-- Step 1 -->
               <div class="timeline-step">
                 <div class="step-content-left">

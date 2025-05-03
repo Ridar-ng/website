@@ -46,6 +46,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
+  // Function to activate a specific timeline tab from hero section buttons
+  window.activateTab = function(roleValue, tabType) {
+    // Scroll to the how it works section
+    const howItWorksSection = document.getElementById('how-it-works');
+    if (howItWorksSection) {
+      howItWorksSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Activate the corresponding role tab
+    const targetTab = document.querySelector(`.${tabType}[data-role="${roleValue}"]`);
+    if (targetTab) {
+      // Simulate a click on the tab
+      targetTab.click();
+    }
+  };
+  
   // Testimonial Slider Functionality
   const testimonialSlider = {
     slides: document.querySelector('.testimonial-slides'),
