@@ -4,30 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stika - Turn Every Keke Ride Into a Moving Ad</title>
-  <meta name="description" content="Reach millions on Nigerian streets. Transform your tricycle into a moving advertisement. Nigeria's leading mobile advertising platform connecting keke riders with advertisers.">
-  
-  <!-- SEO Meta Tags -->
-  <meta name="keywords" content="Stika, keke advertising, tricycle advertising, mobile advertising, Nigeria, Lagos, Abuja, Port Harcourt, outdoor advertising, street advertising">
-  <meta name="author" content="Stika">
-  <meta name="robots" content="index, follow">
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://stika.ng/">
-  <meta property="og:title" content="Stika - Turn Every Keke Ride Into a Moving Ad">
-  <meta property="og:description" content="Reach millions on Nigerian streets. Transform your tricycle into a moving advertisement.">
-  <meta property="og:image" content="https://stika.ng/images/logo.png">
-  
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://stika.ng/">
-  <meta property="twitter:title" content="Stika - Turn Every Keke Ride Into a Moving Ad">
-  <meta property="twitter:description" content="Nigeria's leading mobile advertising platform connecting keke riders with advertisers.">
-  <meta property="twitter:image" content="https://stika.ng/images/logo.png">
-  
-  <!-- Canonical URL -->
-  <meta rel="canonical" href="https://stika.ng/">
-  
+  <meta name="description" content="Reach millions on Nigerian streets. Transform your tricycle into a moving advertisement.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -57,8 +34,6 @@
   </script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/styles.css">
-  <!-- Favicon -->
-  <link rel="icon" href="images/header.png" type="image/png">
 </head>
 <body>
   <!-- Development Banner -->
@@ -69,18 +44,19 @@
   <!-- Header -->
   <header class="w-full py-3 px-6 flex items-center justify-between bg-purple-950">
     <a href="/" class="flex items-center">
-      <img src="images/header.png" alt="Stika Logo" class="h-10 w-auto object-contain">
+      <img src="images/Headerlogo.png" alt="Stika Logo" class="w-8 h-8 mr-1.5">
+      <span class="font-bold text-white text-lg">Stika</span>
     </a>
     
     <div class="flex items-center">
       <nav class="hidden md:flex items-center mr-4">
-        <a href="#keke-riders" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">For Riders</a>
-        <a href="#advertising-client" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">For Advertisers</a>
-        <a href="#how-it-works" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">How It Works</a>
+        <a href="/for-riders" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">For Riders</a>
+        <a href="/for-advertisers" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">For Advertisers</a>
+        <a href="/how-it-works" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">How It Works</a>
         <a href="/login" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">Log In</a>
       </nav>
       
-      <a href="#" class="bg-white text-purple-950 hover:bg-gray-100 px-4 py-1.5 rounded-full font-medium text-sm">Sign Up</a>
+      <button class="bg-white text-purple-950 hover:bg-gray-100 px-4 py-1.5 rounded-full font-medium text-sm">Sign Up</button>
     </div>
   </header>
 
@@ -97,13 +73,13 @@
             </p>
             
             <div class="flex flex-wrap gap-3 mb-6">
-              <a href="#advertising-client" class="bg-white text-purple-950 hover:bg-gray-100 px-4 py-2 rounded-full font-medium text-sm inline-block">
+              <a href="#how-it-works" class="bg-white text-purple-950 hover:bg-gray-100 px-4 py-2 rounded-full font-medium text-sm inline-block" onclick="activateTab('client', 'role-tab')">
                 Stika for Advertisers
               </a>
-              <a href="#advertising-agent" class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm inline-block">
+              <a href="#how-it-works" class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm inline-block" onclick="activateTab('agent', 'role-tab')">
                 I Have an Agency
               </a>
-              <a href="#keke-riders" class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm inline-block">
+              <a href="#how-it-works" class="text-white border border-white hover:bg-purple-800 px-4 py-2 rounded-full font-medium text-sm inline-block" onclick="activateTab('advertiser', 'role-tab')">
                 I am Keke Rider
               </a>
             </div>
@@ -137,11 +113,6 @@
           <div class="text-center md:text-left">
             <h3 class="text-3xl font-bold text-white">10+</h3>
             <p class="text-purple-300">Advertising Clients</p>
-          </div>
-          
-          <div class="text-center md:text-left">
-            <h3 class="text-3xl font-bold text-white">3+</h3>
-            <p class="text-purple-300">Major Cities</p>
           </div>
         </div>
       </div>
@@ -207,7 +178,7 @@
             </div>
             
             <div class="text-center mt-8">
-              <a href="#" class="bg-purple-800 hover:bg-purple-900 text-white px-6 py-2 rounded-full font-medium text-sm inline-block">Start Advertising</a>
+              <button class="bg-purple-800 hover:bg-purple-900 text-white px-6 py-2 rounded-full font-medium text-sm">Start Advertising</button>
             </div>
           </div>
           
@@ -251,7 +222,7 @@
             </div>
             
             <div class="text-center mt-8">
-              <a href="#" class="bg-purple-800 hover:bg-purple-900 text-white px-6 py-2 rounded-full font-medium text-sm inline-block">Become an Agent</a>
+              <button class="bg-purple-800 hover:bg-purple-900 text-white px-6 py-2 rounded-full font-medium text-sm">Become an Agent</button>
             </div>
           </div>
           
@@ -295,7 +266,7 @@
             </div>
             
             <div class="text-center mt-8">
-              <a href="#" class="bg-purple-800 hover:bg-purple-900 text-white px-6 py-2 rounded-full font-medium text-sm inline-block">Join as a Rider</a>
+              <button class="bg-purple-800 hover:bg-purple-900 text-white px-6 py-2 rounded-full font-medium text-sm">Join as a Rider</button>
             </div>
           </div>
         </div>
@@ -657,7 +628,8 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <div>
           <div class="flex items-center mb-4">
-            <img src="images/header.png" alt="Stika Logo" class="h-8 w-auto object-contain">
+            <img src="images/Headerlogo.png" alt="Stika Logo" class="w-6 h-6 mr-2">
+            <span class="font-bold text-white text-xl">Stika</span>
           </div>
           <p class="text-sm text-gray-300 mb-4">
             Nigeria's leading mobile advertising platform connecting tricycle riders with advertisers.

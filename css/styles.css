@@ -17,10 +17,92 @@ header {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* How It Works Section Styles */
 .how-it-works-section {
   background-color: #f9f9f9;
 }
 
+.role-tabs {
+  display: inline-flex;
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+  padding: 4px;
+}
+
+.role-tab {
+  border: none;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 8px 16px;
+  color: #6b7280;
+}
+
+.role-tab.active {
+  background-color: white;
+  color: #4a1184;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-content {
+  display: none;
+}
+
+.timeline-content.active {
+  display: block;
+}
+
+.timeline-content.hidden {
+  display: none;
+}
+
+.vertical-timeline {
+  position: relative;
+  padding: 20px 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.vertical-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #c4b5fd; /* Light purple */
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.timeline-step {
+  position: relative;
+  margin-bottom: 60px;
+}
+
+.timeline-step:last-child {
+  margin-bottom: 0;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background-color: #6d28d9;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 10;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 6px rgba(109, 40, 217, 0.2);
+}
+
+/* Join Network Section */
 .tabs-list {
   background-color: #f3f4f6;
   border-radius: 9999px;
@@ -52,104 +134,7 @@ header {
   display: block;
 }
 
-.vertical-timeline {
-  position: relative;
-}
-
-.vertical-line {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background-color: #6d28d9;
-  z-index: 0;
-  transform: translateX(-50%);
-}
-
-.timeline-step {
-  display: flex;
-  margin-bottom: 60px;
-  position: relative;
-}
-
-.timeline-step:last-child {
-  margin-bottom: 0;
-}
-
-.step-number {
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  color: #6d28d9;
-  border: 2px solid #6d28d9;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  font-weight: bold;
-  z-index: 10;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.step-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #6d28d9;
-  margin-bottom: 0.25rem;
-}
-
-.step-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.step-description {
-  color: #6b7280;
-  font-size: 0.95rem;
-}
-
-.step-content-left {
-  width: 45%;
-  text-align: right;
-  padding-right: 40px;
-}
-
-.step-content-right {
-  width: 45%;
-  margin-left: auto;
-  text-align: left;
-  padding-left: 40px;
-}
-
-.role-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 40px;
-}
-
-.role-tab {
-  background-color: #e5e7eb;
-  color: #4b5563;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.role-tab.active {
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
+/* Footer */
 .footer {
   background-color: #4a1184;
   color: white;
@@ -240,48 +225,42 @@ header {
 }
 
 /* Responsive styles */
-@media (min-width: 768px) {
-  .testimonial-slide {
-    flex: 0 0 100%;
-    width: 100%;
-  }
-  
-  .testimonial-slide .bg-white {
-    margin: 0.5rem;
-  }
-}
-
 @media (max-width: 768px) {
+  /* How It Works responsive */
   .vertical-line {
     left: 20px;
-    transform: none;
   }
   
   .timeline-step {
-    flex-direction: column;
+    flex-direction: column !important;
+    padding-left: 40px !important;
   }
   
   .step-number {
-    left: 20px;
-    transform: none;
+    left: 20px !important;
+    transform: none !important;
   }
   
-  .step-content-left,
-  .step-content-right {
-    width: 100%;
-    text-align: left;
-    padding-left: 50px;
-    padding-right: 0;
-    margin-left: 0;
+  .timeline-step .w-1/2 {
+    width: 100% !important;
+    padding: 0 !important;
+    margin-top: 10px !important;
+    text-align: left !important;
   }
   
+  /* Hero image responsive */
   .hero-image {
     max-height: 300px;
+  }
+  
+  /* Testimonial responsive */
+  .testimonial-slide .bg-white {
+    margin: 0;
   }
 }
 
 @media (max-width: 480px) {
   .hero-image {
-    max-height: 250px;
+    max-height: 200px;
   }
 } 

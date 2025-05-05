@@ -134,4 +134,4 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize the testimonial slider
   testimonialSlider.init();
-}); 
+});
