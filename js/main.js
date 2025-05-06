@@ -134,4 +134,14 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize the testimonial slider
   testimonialSlider.init();
+
+  // Mobile menu toggle
+  const mobileMenuBtn = document.querySelector('header button.md\\:hidden');
+  const mobileMenu = document.querySelector('.hidden.bg-purple-900.w-full');
+
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
 });

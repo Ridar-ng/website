@@ -58,7 +58,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/styles.css">
   <!-- Favicon -->
-  <link rel="icon" href="images/header.png" type="image/png">
+  <link rel="icon" href="images/Stika.svg" type="image/svg+xml">
 </head>
 <body>
   <!-- Development Banner -->
@@ -67,9 +67,9 @@
   </div>
 
   <!-- Header -->
-  <header class="w-full py-3 px-6 flex items-center justify-between bg-purple-950">
+  <header class="w-full py-4 px-4 md:px-6 flex items-center justify-between bg-purple-950">
     <a href="/" class="flex items-center">
-      <img src="images/header.png" alt="Stika Logo" class="h-10 w-auto object-contain">
+      <img src="images/Stika.svg" alt="Stika Logo" class="h-14 w-auto object-contain">
     </a>
     
     <div class="flex items-center">
@@ -80,9 +80,26 @@
         <a href="/login" class="text-white text-sm font-medium hover:text-purple-200 px-3 py-1">Log In</a>
       </nav>
       
-      <a href="#" class="bg-white text-purple-950 hover:bg-gray-100 px-4 py-1.5 rounded-full font-medium text-sm">Sign Up</a>
+      <a href="#" class="bg-white text-purple-950 hover:bg-gray-100 px-3 md:px-4 py-1.5 rounded-full font-medium text-xs md:text-sm whitespace-nowrap">Sign Up</a>
+      
+      <!-- Mobile Menu Button -->
+      <button class="ml-3 md:hidden text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
     </div>
   </header>
+
+  <!-- Mobile Navigation Menu (Hidden by default) -->
+  <div class="hidden bg-purple-900 w-full py-3 px-6 md:hidden">
+    <nav class="flex flex-col space-y-2">
+      <a href="#keke-riders" class="text-white font-medium hover:text-purple-200 py-2">For Advertisers</a>
+      <a href="#advertising-client" class="text-white font-medium hover:text-purple-200 py-2">For Agent</a>
+      <a href="#how-it-works" class="text-white font-medium hover:text-purple-200 py-2">For Riders</a>
+      <a href="/login" class="text-white font-medium hover:text-purple-200 py-2">Log In</a>
+    </nav>
+  </div>
 
   <main>
     <!-- Hero Section -->
@@ -313,10 +330,10 @@
         <div class="max-w-4xl mx-auto">
           <!-- Role Tabs -->
           <div class="flex justify-center mb-8">
-            <div class="role-tabs inline-flex rounded-full bg-gray-100 p-1">
-              <button class="role-tab active px-4 py-2 rounded-full text-sm" data-role="client">For Client</button>
-              <button class="role-tab px-4 py-2 rounded-full text-sm" data-role="agent">For Agents</button>
-              <button class="role-tab px-4 py-2 rounded-full text-sm" data-role="advertiser">For Keke Riders</button>
+            <div class="role-tabs inline-flex rounded-full bg-gray-100 p-1 w-full md:w-auto">
+              <button class="role-tab active px-4 py-2 rounded-full text-sm flex-1 md:flex-none" data-role="client">For Client</button>
+              <button class="role-tab px-4 py-2 rounded-full text-sm flex-1 md:flex-none" data-role="agent">For Agents</button>
+              <button class="role-tab px-4 py-2 rounded-full text-sm flex-1 md:flex-none" data-role="advertiser">For Keke Riders</button>
             </div>
           </div>
           
@@ -325,49 +342,49 @@
             <!-- Client Timeline (Default Active) -->
             <div class="timeline-content active" id="client-timeline">
               <div class="vertical-timeline relative">
-                <div class="vertical-line absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-purple-300"></div>
+                <div class="vertical-line absolute left-1/2 md:left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-purple-300"></div>
                 
                 <!-- Step 1 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12 text-right">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-full md:w-1/2 pr-0 md:pr-12 text-left md:text-right pl-8 md:pl-0">
                     <div class="text-purple-600 font-semibold mb-1">BEGIN HERE</div>
-                    <h3 class="text-2xl font-bold mb-2">Create Account</h3>
-                    <p class="text-gray-600">Sign up quickly to access your dashboard and connect with verified advertising agents.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Create Account</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Sign up quickly to access your dashboard and connect with verified advertising agents.</p>
                   </div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">1</div>
-                  <div class="w-1/2 pl-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">1</div>
+                  <div class="w-0 md:w-1/2 pl-0 md:pl-12"></div>
                 </div>
                 
                 <!-- Step 2 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12"></div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">2</div>
-                  <div class="w-1/2 pl-12">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-0 md:w-1/2 pr-0 md:pr-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">2</div>
+                  <div class="w-full md:w-1/2 pl-8 md:pl-12">
                     <div class="text-purple-600 font-semibold mb-1">PLAN YOUR ADS</div>
-                    <h3 class="text-2xl font-bold mb-2">Submit a Campaign Proposal</h3>
-                    <p class="text-gray-600">Outline your goals, budget, target audience, and preferred ad formats. Choose an agent or get matched automatically.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Submit a Campaign Proposal</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Outline your goals, budget, target audience, and preferred ad formats. Choose an agent or get matched automatically.</p>
                   </div>
                 </div>
                 
                 <!-- Step 3 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12 text-right">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-full md:w-1/2 pr-0 md:pr-12 text-left md:text-right pl-8 md:pl-0">
                     <div class="text-purple-600 font-semibold mb-1">CHOOSE SCALE</div>
-                    <h3 class="text-2xl font-bold mb-2">Collaborate with the Agent</h3>
-                    <p class="text-gray-600">Work together to finalize creatives, timelines, and logistics. Review and approve campaign plans before launch.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Collaborate with the Agent</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Work together to finalize creatives, timelines, and logistics. Review and approve campaign plans before launch.</p>
                   </div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">3</div>
-                  <div class="w-1/2 pl-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">3</div>
+                  <div class="w-0 md:w-1/2 pl-0 md:pl-12"></div>
                 </div>
                 
                 <!-- Step 4 -->
                 <div class="timeline-step flex">
-                  <div class="w-1/2 pr-12"></div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">4</div>
-                  <div class="w-1/2 pl-12">
+                  <div class="w-0 md:w-1/2 pr-0 md:pr-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">4</div>
+                  <div class="w-full md:w-1/2 pl-8 md:pl-12">
                     <div class="text-purple-600 font-semibold mb-1">MONITOR IMPACT</div>
-                    <h3 class="text-2xl font-bold mb-2">Track Results</h3>
-                    <p class="text-gray-600">Monitor performance via your dashboard with real-time updates, deployment proof, and a final campaign report.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Track Results</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Monitor performance via your dashboard with real-time updates, deployment proof, and a final campaign report.</p>
                   </div>
                 </div>
               </div>
@@ -376,49 +393,49 @@
             <!-- Agent Timeline -->
             <div class="timeline-content hidden" id="agent-timeline">
               <div class="vertical-timeline relative">
-                <div class="vertical-line absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-purple-300"></div>
+                <div class="vertical-line absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-purple-300"></div>
                 
                 <!-- Step 1 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12 text-right">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-full md:w-1/2 pr-0 md:pr-12 text-left md:text-right pl-8 md:pl-0">
                     <div class="text-purple-600 font-semibold mb-1">BEGIN HERE</div>
-                    <h3 class="text-2xl font-bold mb-2">Create Account</h3>
-                    <p class="text-gray-600">Set up your business profile and start getting proposals from clients.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Create Account</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Set up your business profile and start getting proposals from clients.</p>
                   </div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">1</div>
-                  <div class="w-1/2 pl-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">1</div>
+                  <div class="w-0 md:w-1/2 pl-0 md:pl-12"></div>
                 </div>
                 
                 <!-- Step 2 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12"></div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">2</div>
-                  <div class="w-1/2 pl-12">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-0 md:w-1/2 pr-0 md:pr-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">2</div>
+                  <div class="w-full md:w-1/2 pl-8 md:pl-12">
                     <div class="text-purple-600 font-semibold mb-1">PLAN YOUR ADS</div>
-                    <h3 class="text-2xl font-bold mb-2">Design Campaign</h3>
-                    <p class="text-gray-600">Upload the sticker design and valid evidence of regulatory approval.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Design Campaign</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Upload the sticker design and valid evidence of regulatory approval.</p>
                   </div>
                 </div>
                 
                 <!-- Step 3 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12 text-right">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-full md:w-1/2 pr-0 md:pr-12 text-left md:text-right pl-8 md:pl-0">
                     <div class="text-purple-600 font-semibold mb-1">CHOOSE SCALE</div>
-                    <h3 class="text-2xl font-bold mb-2">Select Coverage</h3>
-                    <p class="text-gray-600">Choose your target areas and set their budgets, number of keke and duration.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Select Coverage</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Choose your target areas and set their budgets, number of keke and duration.</p>
                   </div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">3</div>
-                  <div class="w-1/2 pl-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">3</div>
+                  <div class="w-0 md:w-1/2 pl-0 md:pl-12"></div>
                 </div>
                 
                 <!-- Step 4 -->
                 <div class="timeline-step flex">
-                  <div class="w-1/2 pr-12"></div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">4</div>
-                  <div class="w-1/2 pl-12">
+                  <div class="w-0 md:w-1/2 pr-0 md:pr-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">4</div>
+                  <div class="w-full md:w-1/2 pl-8 md:pl-12">
                     <div class="text-purple-600 font-semibold mb-1">MONITOR IMPACT</div>
-                    <h3 class="text-2xl font-bold mb-2">Track Results</h3>
-                    <p class="text-gray-600">Access real-time analytics and campaign performance data.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Track Results</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Access real-time analytics and campaign performance data.</p>
                   </div>
                 </div>
               </div>
@@ -427,49 +444,49 @@
             <!-- Keke Riders Timeline -->
             <div class="timeline-content hidden" id="advertiser-timeline">
               <div class="vertical-timeline relative">
-                <div class="vertical-line absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-purple-300"></div>
+                <div class="vertical-line absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-purple-300"></div>
                 
                 <!-- Step 1 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12 text-right">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-full md:w-1/2 pr-0 md:pr-12 text-left md:text-right pl-8 md:pl-0">
                     <div class="text-purple-600 font-semibold mb-1">BEGIN HERE</div>
-                    <h3 class="text-2xl font-bold mb-2">Create Account</h3>
-                    <p class="text-gray-600">Sign up quickly with your keke details and required documents.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Create Account</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Sign up quickly with your keke details and required documents.</p>
                   </div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">1</div>
-                  <div class="w-1/2 pl-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">1</div>
+                  <div class="w-0 md:w-1/2 pl-0 md:pl-12"></div>
                 </div>
                 
                 <!-- Step 2 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12"></div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">2</div>
-                  <div class="w-1/2 pl-12">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-0 md:w-1/2 pr-0 md:pr-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">2</div>
+                  <div class="w-full md:w-1/2 pl-8 md:pl-12">
                     <div class="text-purple-600 font-semibold mb-1">GET APPROVED</div>
-                    <h3 class="text-2xl font-bold mb-2">Verification</h3>
-                    <p class="text-gray-600">Quick verification process to ensure safety and quality standards.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Verification</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Quick verification process to ensure safety and quality standards.</p>
                   </div>
                 </div>
                 
                 <!-- Step 3 -->
-                <div class="timeline-step flex mb-16">
-                  <div class="w-1/2 pr-12 text-right">
+                <div class="timeline-step flex mb-12 md:mb-16">
+                  <div class="w-full md:w-1/2 pr-0 md:pr-12 text-left md:text-right pl-8 md:pl-0">
                     <div class="text-purple-600 font-semibold mb-1">BEGIN YOUR JOURNEY</div>
-                    <h3 class="text-2xl font-bold mb-2">Start Earning</h3>
-                    <p class="text-gray-600">Get your keke branded and start earning extra income immediately.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Start Earning</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Get your keke branded and start earning extra income immediately.</p>
                   </div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">3</div>
-                  <div class="w-1/2 pl-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">3</div>
+                  <div class="w-0 md:w-1/2 pl-0 md:pl-12"></div>
                 </div>
                 
                 <!-- Step 4 -->
                 <div class="timeline-step flex">
-                  <div class="w-1/2 pr-12"></div>
-                  <div class="step-number flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 text-white font-bold absolute left-1/2 transform -translate-x-1/2 z-10">4</div>
-                  <div class="w-1/2 pl-12">
+                  <div class="w-0 md:w-1/2 pr-0 md:pr-12"></div>
+                  <div class="step-number flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 text-white font-bold absolute left-0 md:left-1/2 transform md:-translate-x-1/2 z-10">4</div>
+                  <div class="w-full md:w-1/2 pl-8 md:pl-12">
                     <div class="text-purple-600 font-semibold mb-1">WEEKLY EARNINGS</div>
-                    <h3 class="text-2xl font-bold mb-2">Get Paid</h3>
-                    <p class="text-gray-600">Receive secure weekly payments directly to your bank account.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Get Paid</h3>
+                    <p class="text-gray-600 text-sm md:text-base">Receive secure weekly payments directly to your bank account.</p>
                   </div>
                 </div>
               </div>
@@ -654,10 +671,10 @@
   <!-- Footer -->
   <footer class="footer pt-12 pb-6">
     <div class="container mx-auto px-4 md:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
         <div>
-          <div class="flex items-center mb-4">
-            <img src="images/header.png" alt="Stika Logo" class="h-8 w-auto object-contain">
+          <div class="flex items-center mb-5">
+            <img src="images/Stika.svg" alt="Stika Logo" class="h-12 w-auto object-contain">
           </div>
           <p class="text-sm text-gray-300 mb-4">
             Nigeria's leading mobile advertising platform connecting tricycle riders with advertisers.
@@ -697,9 +714,9 @@
           </ul>
         </div>
 
-        <div>
+        <div class="col-span-2 md:col-span-1">
           <h4 class="font-bold text-white mb-4">Download Our App</h4>
-          <div class="space-y-3">
+          <div class="space-y-3 flex flex-col items-start">
             <a href="#" class="block">
               <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" alt="Download on the App Store" class="rounded h-10" width="auto">
             </a>
