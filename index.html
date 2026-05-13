@@ -386,6 +386,58 @@
       </div>
     </section>
 
+    <!-- Interactive Builder Teaser -->
+    <section class="py-16 px-4 md:px-8 bg-purple-50">
+      <div class="container mx-auto">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+          <div class="md:w-1/2">
+            <h2 class="text-3xl font-bold mb-4">Interactive Campaign Builder</h2>
+            <p class="text-gray-600 mb-6 text-lg">
+              Experience the power of Stika's advertising platform. Plan your routes, set your budget, and see your potential reach in real-time.
+            </p>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center text-gray-700">
+                <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Precise geofencing for local targeting
+              </li>
+              <li class="flex items-center text-gray-700">
+                <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Real-time budget estimation
+              </li>
+              <li class="flex items-center text-gray-700">
+                <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Simulated performance dashboard
+              </li>
+            </ul>
+            <button onclick="StikaDemo.open()" class="bg-purple-800 hover:bg-purple-900 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg transform transition hover:scale-105">
+              Launch Campaign Builder
+            </button>
+          </div>
+          <div class="md:w-1/2 relative">
+            <div class="bg-white p-4 rounded-2xl shadow-2xl border border-purple-100 transform rotate-2">
+              <img src="images/keke-bg.png" alt="Builder Preview" class="rounded-lg mb-4 opacity-50 grayscale">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-xl text-center border border-purple-200">
+                  <div class="text-purple-800 font-bold text-xl mb-2">Simulation Mode</div>
+                  <div class="text-gray-500 text-sm">Interactive Preview</div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -bottom-6 -left-6 bg-purple-600 text-white p-6 rounded-2xl shadow-xl transform -rotate-3 hidden md:block">
+              <div class="text-2xl font-bold">₦15,000</div>
+              <div class="text-xs opacity-80">Estimated Daily Reach</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- How It Works Section -->
     <section class="how-it-works-section py-16 px-4 md:px-8" id="how-it-works">
       <div class="container mx-auto">

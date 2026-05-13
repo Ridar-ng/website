@@ -1,22 +1,22 @@
 /**
  * Stika "Try It Yourself" Demo
- * 3-step wizard: Design Campaign → Preview Dashboard → Connect with Agencies
+ * 3-step wizard: Design Campaign → Preview Dashboard → Submit Campaign
  */
 const StikaDemo = (() => {
   // ── State ──────────────────────────────────────────────────────────
   const API_BASE = 'https://bold.stika.ng/api/v1/agencies';
 
   const LOCATIONS = [
-    { name: 'Kaduna Central', lat: 10.5105, lng: 7.4165 },
-    { name: 'Rigasa, Kaduna',  lat: 10.5410, lng: 7.3750 },
-    { name: 'Zaria',           lat: 11.0801, lng: 7.7069 },
-    { name: 'Barnawa, Kaduna', lat: 10.4833, lng: 7.4333 },
-    { name: 'Kano City',       lat: 12.0022, lng: 8.5920 },
-    { name: 'Sabon Gari, Kano',lat: 11.9700, lng: 8.5300 },
-    { name: 'Abuja Central',   lat: 9.0579,  lng: 7.4951 },
-    { name: 'Wuse, Abuja',     lat: 9.0726,  lng: 7.4892 },
-    { name: 'Garki, Abuja',    lat: 9.0380,  lng: 7.4900 },
-    { name: 'Maitama, Abuja',  lat: 9.0890,  lng: 7.4950 },
+    { name: 'Kaduna Central', lat: 10.5105, lng: 7.4165, city: 'Kaduna' },
+    { name: 'Rigasa, Kaduna',  lat: 10.5410, lng: 7.3750, city: 'Kaduna' },
+    { name: 'Zaria',           lat: 11.0801, lng: 7.7069, city: 'Zaria' },
+    { name: 'Barnawa, Kaduna', lat: 10.4833, lng: 7.4333, city: 'Kaduna' },
+    { name: 'Kano City',       lat: 12.0022, lng: 8.5920, city: 'Kano' },
+    { name: 'Sabon Gari, Kano',lat: 11.9700, lng: 8.5300, city: 'Kano' },
+    { name: 'Abuja Central',   lat: 9.0579,  lng: 7.4951, city: 'Abuja' },
+    { name: 'Wuse, Abuja',     lat: 9.0726,  lng: 7.4892, city: 'Abuja' },
+    { name: 'Garki, Abuja',    lat: 9.0380,  lng: 7.4900, city: 'Abuja' },
+    { name: 'Maitama, Abuja',  lat: 9.0890,  lng: 7.4950, city: 'Abuja' },
   ];
 
   const CAMPAIGN_TYPES = [
@@ -40,13 +40,23 @@ const StikaDemo = (() => {
       tricycles: 25,
       rate_type: 'fixed_daily',
       rate_amount: 500,
+      verifications: 1,
+      sticker_preview: null,
+      sticker_size: 'medium',
     },
-    agencies: [],
-    selectedAgencies: new Set(),
     contact: { full_name: '', email: '', phone: '', message: '' },
     submitting: false,
     error: '',
+    verifying: false, // For CV simulation
   };
+
+  function getVerificationPrice() {
+    const loc = LOCATIONS.find(l => l.name === state.campaign.location_name);
+    const city = loc ? loc.city : 'Kaduna';
+    if (city === 'Abuja') return 300;
+    if (city === 'Kano') return 150;
+    return 200; // Kaduna & Zaria
+  }
 
   // Leaflet references
   let map = null, marker = null, circle = null, miniMap = null, miniCircle = null;
@@ -55,13 +65,37 @@ const StikaDemo = (() => {
   // ── Budget calculation (mirrors web app logic) ─────────────────────
   function calcBudget() {
     const c = state.campaign;
-    const minRiders = 20;
-    const avg = Math.ceil((minRiders + c.tricycles) / 2);
+    const avg = c.tricycles;
+    
+    // Calculate core ads cost (Base Cost)
+    let adsCost = 0;
     if (c.rate_type === 'per_hour') {
-      return c.duration_days * c.rate_amount * avg * 10;
+      adsCost = c.duration_days * c.rate_amount * avg * 10;
+    } else {
+      adsCost = c.rate_amount * avg * c.duration_days;
     }
-    // fixed_daily
-    return c.rate_amount * avg * c.duration_days;
+    
+    // Platform fee (10%) applied to ads cost only
+    const commission = Math.round(adsCost * 0.10);
+    
+    // Verifications
+    const vPrice = getVerificationPrice();
+    const vTotal = (c.rate_type === 'fixed_daily') ? (vPrice * c.verifications * avg) : 0;
+    
+    // Stickers
+    const stickerPrices = { small: 1000, medium: 2000, large: 4000 };
+    const stickerTotal = c.sticker_preview ? (stickerPrices[c.sticker_size] * avg) : 0;
+    
+    // Total sum
+    const totalBase = adsCost + vTotal + stickerTotal;
+    const grandTotal = totalBase + commission;
+    
+    return { 
+      base: totalBase, // This is the sum of sub-costs
+      adsCost: adsCost,
+      commission: commission, 
+      total: grandTotal 
+    };
   }
 
   function budgetBreakdown() {
@@ -176,6 +210,41 @@ const StikaDemo = (() => {
     return node;
   }
 
+  function renderStickerPreviews(imgSrc) {
+    if (!imgSrc) return 'Click to upload or drag sticker design';
+    
+    const tray = el('div', { className: 'demo-sticker-tray' });
+    
+    const prices = { small: 1000, medium: 2000, large: 4000 };
+    
+    ['small', 'medium', 'large'].forEach(size => {
+      const isSelected = state.campaign.sticker_size === size;
+      const card = el('div', { 
+        className: `demo-sticker-card ${size}${isSelected ? ' selected' : ''}`,
+        onClick: (e) => {
+          e.stopPropagation(); // Don't trigger the upload zone click
+          state.campaign.sticker_size = size;
+          const zone = document.getElementById('demo-upload-zone');
+          if (zone) {
+            zone.innerHTML = '';
+            zone.appendChild(renderStickerPreviews(imgSrc));
+          }
+          updateBudgetDisplay(); // Update budget when size changes
+        }
+      },
+        el('div', { className: 'label' }, size),
+        el('div', { className: 'preview-wrap' },
+          el('img', { src: imgSrc })
+        ),
+        el('div', { style: 'font-size: 0.7rem; font-weight: 700; color: #6d28d9; margin-top: 4px;' }, fmtMoney(prices[size])),
+        el('div', { className: 'check' }, isSelected ? '\u2713' : '')
+      );
+      tray.appendChild(card);
+    });
+    
+    return tray;
+  }
+
   // ── Step progress bar ──────────────────────────────────────────────
   function renderProgress() {
     const s = state.step;
@@ -226,6 +295,7 @@ const StikaDemo = (() => {
               updateMapView();
               document.querySelectorAll('.demo-loc-btn').forEach(b => b.classList.remove('active'));
               btn.classList.add('active');
+              updateBudgetDisplay();
             }
           }, loc.name);
           return btn;
@@ -280,6 +350,11 @@ const StikaDemo = (() => {
           if (rateInp) rateInp.value = c.rate_amount;
           const rateLabel = document.getElementById('demo-rate-label');
           if (rateLabel) rateLabel.textContent = c.rate_type === 'per_hour' ? 'Rate per Hour (\u20A6)' : 'Daily Rate (\u20A6)';
+          
+          // Toggle verifications visibility
+          const vField = document.getElementById('demo-verifications-field');
+          if (vField) vField.style.display = c.rate_type === 'fixed_daily' ? 'block' : 'none';
+          
           updateBudgetDisplay();
         });
         return sel;
@@ -291,11 +366,57 @@ const StikaDemo = (() => {
       }, 'demo-rate-label')
     ));
 
+    // Verifications (Only for fixed_daily)
+    const vField = el('div', { id: 'demo-verifications-field', className: 'demo-field', style: `display: ${c.rate_type === 'fixed_daily' ? 'block' : 'none'};` },
+      el('label', { className: 'demo-label' }, 'Total Verifications (per tricycle)'),
+      el('input', { 
+        className: 'demo-input', 
+        type: 'number', 
+        min: '1', 
+        value: String(c.verifications),
+        onInput: e => { c.verifications = Math.max(1, parseInt(e.target.value) || 1); updateBudgetDisplay(); }
+      })
+    );
+    wrap.appendChild(vField);
+
+    // Sticker Upload Simulation
+    wrap.appendChild(el('div', { className: 'demo-field' },
+      el('label', { className: 'demo-label' }, 'Campaign Sticker Design (Optional)'),
+      el('div', { 
+        className: 'demo-upload-zone',
+        id: 'demo-upload-zone',
+        style: 'border: 2px dashed #d1d5db; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;',
+        onClick: () => {
+          const mockFile = document.createElement('input');
+          mockFile.type = 'file';
+          mockFile.accept = 'image/*';
+          mockFile.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (re) => {
+                state.campaign.sticker_preview = re.target.result;
+                const zone = document.getElementById('demo-upload-zone');
+                zone.innerHTML = '';
+                zone.appendChild(renderStickerPreviews(re.target.result));
+                zone.style.borderColor = '#8b5cf6';
+                zone.style.background = '#f5f3ff';
+                updateBudgetDisplay();
+              };
+              reader.readAsDataURL(file);
+            }
+          };
+          mockFile.click();
+        }
+      }, renderStickerPreviews(state.campaign.sticker_preview))
+    ));
+
     // Budget display
+    const b = calcBudget();
     wrap.appendChild(el('div', { className: 'demo-budget-display', id: 'demo-budget-box' },
-      el('div', { style: 'font-size:.75rem;color:#6b7280;margin-bottom:2px;' }, 'Estimated Campaign Budget'),
-      el('div', { className: 'demo-budget-amount', id: 'demo-budget-amount' }, fmtMoney(calcBudget())),
-      el('div', { className: 'demo-budget-breakdown', id: 'demo-budget-breakdown' }, budgetBreakdown())
+      el('div', { style: 'font-size:.85rem;color:#6b7280;margin-bottom:4px;font-weight:600;' }, 'Estimated Total Budget'),
+      el('div', { className: 'demo-budget-amount', id: 'demo-budget-amount' }, fmtMoney(b.total)),
+      el('div', { className: 'demo-budget-breakdown', id: 'demo-budget-breakdown' }, `Base: ${fmtMoney(b.base)} + Platform Fee: ${fmtMoney(b.commission)}`)
     ));
 
     return wrap;
@@ -313,8 +434,24 @@ const StikaDemo = (() => {
   function updateBudgetDisplay() {
     const amtEl = document.getElementById('demo-budget-amount');
     const brkEl = document.getElementById('demo-budget-breakdown');
-    if (amtEl) amtEl.textContent = fmtMoney(calcBudget());
-    if (brkEl) brkEl.textContent = budgetBreakdown();
+    const b = calcBudget();
+    const c = state.campaign;
+    
+    if (amtEl) amtEl.textContent = fmtMoney(b.total);
+    
+    if (brkEl) {
+      const stickerPrices = { small: 1000, medium: 2000, large: 4000 };
+      const stickerTotal = c.sticker_preview ? (stickerPrices[c.sticker_size] * c.tricycles) : 0;
+      
+      const vPrice = getVerificationPrice();
+      const vTotal = (c.rate_type === 'fixed_daily') ? (vPrice * c.verifications * c.tricycles) : 0;
+      
+      let brkText = `Ads: ${fmtMoney(b.adsCost)}`;
+      if (vTotal > 0) brkText += ` + Verifications: ${fmtMoney(vTotal)}`;
+      if (stickerTotal > 0) brkText += ` + Stickers: ${fmtMoney(stickerTotal)}`;
+      brkText += ` + Fee: ${fmtMoney(b.commission)}`;
+      brkEl.textContent = brkText;
+    }
   }
 
   function updateRadiusLabel() {
@@ -325,96 +462,104 @@ const StikaDemo = (() => {
   // ── Step 2: Simulated Dashboard ────────────────────────────────────
   function renderStep2() {
     const c = state.campaign;
-    const baseBudget = calcBudget();
-    const commission = Math.round(baseBudget * 0.05); // 5% platform fee
-    const subtotal = baseBudget + commission;
-    const vat = Math.round(subtotal * 0.075); // 7.5% VAT
-    const totalBudget = subtotal + vat;
+    const b = calcBudget();
+    const totalBudget = b.total;
 
+    // Simulate some real-time data for the premium feel
     const spentPct = 35 + Math.random() * 30; // 35-65%
-    const spent = Math.round(totalBudget * spentPct / 100);
-    const exposureHours = c.duration_days * c.tricycles * 10; // 10 working hours per day
-    const riders = Math.max(5, Math.floor(baseBudget / 5000));
+    const exposureHours = Math.round(c.duration_days * c.tricycles * 10 * (spentPct / 100)); 
+    const remainingDays = Math.max(1, Math.round(c.duration_days * ((100 - spentPct) / 100)));
+    const riders = c.tricycles;
 
     const wrap = el('div', null);
 
-    // Campaign header
-    wrap.appendChild(el('div', { style: 'display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;' },
+    // Campaign header with a more premium look
+    wrap.appendChild(el('div', { className: 'demo-dash-header' },
       el('div', null,
-        el('h3', { style: 'margin:0;font-size:1.1rem;' }, c.name || 'Untitled Campaign'),
-        el('div', { style: 'font-size:.78rem;color:#6b7280;margin-top:2px;' },
-          CAMPAIGN_TYPES.find(t => t.value === c.type)?.label + ' \u2022 ' + c.location_name)
+        el('h3', { className: 'demo-dash-title' }, c.name || 'Untitled Campaign'),
+        el('div', { className: 'demo-dash-subtitle' },
+          el('span', { className: 'demo-tag' }, CAMPAIGN_TYPES.find(t => t.value === c.type)?.label),
+          el('span', null, el('i', { className: 'demo-icon-loc' }), c.location_name))
       ),
-      el('span', { className: 'demo-status-badge' }, 'Active')
-    ));
-
-    // Metric cards
-    wrap.appendChild(el('div', { className: 'demo-dash-grid' },
-      dashCard('Total Cost', fmtMoney(totalBudget)),
-      dashCard('Spent', fmtMoney(spent)),
-      dashCard('Exposure Hrs', exposureHours.toLocaleString()),
-      dashCard('Riders', String(riders)),
-      dashCard('Duration', c.duration_days + ' days'),
-      dashCard('Remaining', '14 days'),
-      dashCard('Geofences', '1'),
-      dashCard('Radius', (c.radius_meters / 1000).toFixed(1) + ' km')
-    ));
-
-    // Cost breakdown
-    wrap.appendChild(el('div', { style: 'background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:14px;margin-bottom:12px;' },
-      el('div', { style: 'font-size:.8rem;font-weight:600;color:#374151;margin-bottom:8px;' }, 'Cost Breakdown'),
-      el('div', { style: 'display:flex;justify-content:space-between;font-size:.78rem;color:#6b7280;margin-bottom:4px;' },
-        el('span', null, 'Campaign Budget'),
-        el('span', null, fmtMoney(baseBudget))
-      ),
-      el('div', { style: 'display:flex;justify-content:space-between;font-size:.78rem;color:#6b7280;margin-bottom:4px;' },
-        el('span', null, 'Platform Fee (5%)'),
-        el('span', null, fmtMoney(commission))
-      ),
-      el('div', { style: 'display:flex;justify-content:space-between;font-size:.78rem;color:#6b7280;margin-bottom:8px;' },
-        el('span', null, 'VAT (7.5%)'),
-        el('span', null, fmtMoney(vat))
-      ),
-      el('div', { style: 'display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;color:#1f2937;border-top:1px solid #e5e7eb;padding-top:8px;' },
-        el('span', null, 'Total'),
-        el('span', null, fmtMoney(totalBudget))
+      el('div', { className: 'demo-status-container' },
+        el('span', { className: 'demo-status-pulse' }),
+        el('span', { className: 'demo-status-text' }, 'Live Now')
       )
     ));
 
-    // Budget utilisation bar
-    wrap.appendChild(el('div', { className: 'demo-field' },
-      el('div', { style: 'display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:2px;' },
-        el('span', null, 'Budget Utilisation'),
-        el('span', { style: 'font-weight:600;' }, Math.round(spentPct) + '%')
+    // Metric cards with icons and better styling
+    wrap.appendChild(el('div', { className: 'demo-dash-grid' },
+      dashCard('Total Budget', fmtMoney(totalBudget), '₦'),
+      dashCard('Remaining', remainingDays + ' days', '📅'),
+      dashCard('Exposure', exposureHours.toLocaleString() + ' hrs', '⏱'),
+      dashCard('Fleet Size', String(riders), '🛺')
+    ));
+
+    // Live Economics Section
+    const stickerPrices = { small: 1000, medium: 2000, large: 4000 };
+    const stickerTotal = c.sticker_preview ? (stickerPrices[c.sticker_size] * c.tricycles) : 0;
+    const vPrice = getVerificationPrice();
+    const vTotal = c.rate_type === 'fixed_daily' ? (vPrice * c.verifications * c.tricycles) : 0;
+    const adsBase = b.base - vTotal - stickerTotal;
+
+    const ecoBox = el('div', { className: 'demo-eco-card' },
+      el('div', { className: 'demo-eco-header' }, 
+        el('span', null, 'Campaign Economics'),
+        el('span', { className: 'demo-eco-badge' }, 'Real-time')
       ),
-      el('div', { className: 'demo-progress-bar' },
-        el('div', { className: 'demo-progress-fill', style: 'width:' + spentPct + '%;' })
+      el('div', { className: 'demo-eco-body' },
+        ecoRow('Base Cost', fmtMoney(b.adsCost)),
+        ...(c.rate_type === 'fixed_daily' ? [ecoRow('Verifications', fmtMoney(vTotal))] : []),
+        ...(stickerTotal > 0 ? [ecoRow('Sticker Printing', fmtMoney(stickerTotal))] : []),
+        ecoRow('Platform Fee', fmtMoney(b.commission)),
+        ecoRow('Estimated VAT (7.5%)', fmtMoney(Math.round(totalBudget * 0.075))),
+        el('div', { className: 'demo-eco-total' },
+          el('span', null, 'Projected Total'),
+          el('span', null, fmtMoney(totalBudget + Math.round(totalBudget * 0.075)))
+        )
+      )
+    );
+    wrap.appendChild(ecoBox);
+
+    // Budget utilisation bar with premium styling
+    wrap.appendChild(el('div', { className: 'demo-field' },
+      el('div', { className: 'demo-progress-label' },
+        el('span', null, 'Budget Utilization'),
+        el('span', { className: 'demo-pct-text' }, Math.round(spentPct) + '%')
+      ),
+      el('div', { className: 'demo-progress-container' },
+        el('div', { className: 'demo-progress-fill-premium', style: 'width:' + spentPct + '%;' })
       )
     ));
 
     // Mini map
     wrap.appendChild(el('div', { className: 'demo-field' },
-      el('label', { className: 'demo-label' }, 'Campaign Geofence'),
-      el('div', { id: 'demo-minimap', className: 'demo-minimap' })
+      el('label', { className: 'demo-label' }, 'Geofence Coverage'),
+      el('div', { id: 'demo-minimap-premium', className: 'demo-minimap-premium' })
     ));
 
-    // Info note - simulated preview
-    wrap.appendChild(el('div', {
-      style: 'background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:.8rem;color:#166534;margin-top:12px;'
-    }, 'This is a simulated preview of what your campaign dashboard would look like. Actual results will vary based on real-world conditions.'));
-
-    // Info note - other charges
-    wrap.appendChild(el('div', {
-      style: 'background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:12px;font-size:.78rem;color:#854d0e;margin-top:10px;'
-    }, 'Note: Please contact the agency for other charges such as sticker printing, agency commission, and regulatory fees.'));
+    // Simulation Notice
+    wrap.appendChild(el('div', { className: 'demo-notice-green' }, 
+      '✨ This dashboard visualizes your campaign performance in real-time. Data is simulated based on your configuration.'
+    ));
 
     return wrap;
   }
 
-  function dashCard(label, value) {
-    return el('div', { className: 'demo-dash-card' },
-      el('div', { className: 'label' }, label),
-      el('div', { className: 'value' }, value)
+  function ecoRow(label, value) {
+    return el('div', { className: 'demo-eco-row' },
+      el('span', { className: 'label' }, label),
+      el('span', { className: 'value' }, value)
+    );
+  }
+
+  function dashCard(label, value, icon) {
+    return el('div', { className: 'demo-dash-card-premium' },
+      el('div', { className: 'icon' }, icon),
+      el('div', { className: 'content' },
+        el('div', { className: 'label' }, label),
+        el('div', { className: 'value' }, value)
+      )
     );
   }
 
@@ -422,43 +567,12 @@ const StikaDemo = (() => {
   function renderStep3() {
     const wrap = el('div', null);
 
-    // Agency grid
-    wrap.appendChild(el('label', { className: 'demo-label', style: 'margin-bottom:8px;display:block;' },
-      'Select agencies to connect with'));
-
-    if (state.agencies.length === 0) {
-      wrap.appendChild(el('div', { className: 'demo-map-loading', style: 'height:100px;' }, 'Loading agencies...'));
-    } else {
-      const grid = el('div', { className: 'demo-agencies-grid' });
-      state.agencies.forEach(ag => {
-        const card = el('div', {
-          className: 'demo-agency-card' + (state.selectedAgencies.has(ag.id) ? ' selected' : ''),
-          onClick: () => {
-            if (state.selectedAgencies.has(ag.id)) state.selectedAgencies.delete(ag.id);
-            else state.selectedAgencies.add(ag.id);
-            card.classList.toggle('selected');
-            card.querySelector('.check').textContent = state.selectedAgencies.has(ag.id) ? '\u2713' : '';
-          }
-        },
-          ag.logo ? el('img', { className: 'demo-agency-logo', src: ag.logo, alt: ag.name }) :
-            el('div', { className: 'demo-agency-logo', style: 'display:flex;align-items:center;justify-content:center;font-weight:700;color:#8b5cf6;font-size:1.1rem;' }, ag.name.charAt(0)),
-          el('div', { className: 'name' }, ag.name),
-          el('div', { className: 'meta' }, [ag.city, ag.state].filter(Boolean).join(', ')),
-          el('div', { className: 'meta' }, ag.agency_type + (ag.total_campaigns ? ' \u2022 ' + ag.total_campaigns + ' campaigns' : '')),
-          ag.client_commission_rate != null ? el('div', { className: 'meta', style: 'color:#6d28d9;font-weight:600;' }, 'Commission: ' + ag.client_commission_rate + '%') : null,
-          el('div', { className: 'check' }, state.selectedAgencies.has(ag.id) ? '\u2713' : '')
-        );
-        grid.appendChild(card);
-      });
-      wrap.appendChild(grid);
-    }
-
     // Minimal contact form
     wrap.appendChild(el('div', { style: 'border-top:1px solid #e5e7eb;padding-top:16px;margin-top:8px;' },
       el('label', { className: 'demo-label', style: 'font-size:.9rem;margin-bottom:10px;display:block;' }, 'Your Contact Details')
     ));
 
-    wrap.appendChild(field('Full Name *', () => {
+    wrap.appendChild(field('Full Name', () => {
       const inp = el('input', { className: 'demo-input', placeholder: 'Your full name', value: state.contact.full_name });
       inp.addEventListener('input', e => { state.contact.full_name = e.target.value; prefillMessage(); });
       return inp;
@@ -470,7 +584,7 @@ const StikaDemo = (() => {
         inp.addEventListener('input', e => { state.contact.email = e.target.value; });
         return inp;
       }),
-      field('Phone', () => {
+      field('Phone *', () => {
         const inp = el('input', { className: 'demo-input', type: 'tel', placeholder: '080XXXXXXXX', value: state.contact.phone });
         inp.addEventListener('input', e => { state.contact.phone = e.target.value; });
         return inp;
@@ -478,7 +592,7 @@ const StikaDemo = (() => {
     ));
 
     wrap.appendChild(field('Message (optional)', () => {
-      const ta = el('textarea', { className: 'demo-textarea', id: 'demo-message', placeholder: 'Tell the agency about your needs...' });
+      const ta = el('textarea', { className: 'demo-textarea', id: 'demo-message', placeholder: 'Tell us about your needs...' });
       ta.value = state.contact.message || buildPrefillMessage();
       ta.addEventListener('input', e => { state.contact.message = e.target.value; });
       if (!state.contact.message) state.contact.message = buildPrefillMessage();
@@ -495,10 +609,13 @@ const StikaDemo = (() => {
 
   function buildPrefillMessage() {
     const c = state.campaign;
-    const name = state.contact.full_name || '[Name]';
+    const name = state.contact.full_name || 'Client';
     const typeLbl = CAMPAIGN_TYPES.find(t => t.value === c.type)?.label || c.type;
     const rateLbl = c.rate_type === 'per_hour' ? `\u20A6${c.rate_amount}/hour` : `\u20A6${c.rate_amount}/day`;
-    return `Hello, I am ${name} and I would like you to help me create a ${typeLbl} campaign in ${c.location_name} for a duration of ${c.duration_days} days with ${c.tricycles} tricycles at a rate of ${rateLbl}. The estimated budget is ${fmtMoney(calcBudget())}. Please get in touch so we can discuss further.`;
+    const stickerPart = c.sticker_preview ? ` with ${c.sticker_size} stickers` : '';
+    const verificationPart = c.rate_type === 'fixed_daily' ? ` and ${c.verifications} verifications per tricycle` : '';
+    
+    return `Hello, I am ${name} and I would like you to help me create a ${typeLbl} campaign in ${c.location_name} for a duration of ${c.duration_days} days with ${c.tricycles} tricycles${stickerPart}${verificationPart} at a rate of ${rateLbl}. The estimated budget is ${fmtMoney(calcBudget().total)}. Please get in touch so we can discuss further.`;
   }
 
   function prefillMessage() {
@@ -510,12 +627,12 @@ const StikaDemo = (() => {
   }
 
   // ── Success state ──────────────────────────────────────────────────
-  function renderSuccess(count) {
+  function renderSuccess() {
     const wrap = el('div', { className: 'demo-success' },
       el('div', { className: 'demo-success-icon' }, '\u2713'),
       el('h3', { style: 'margin:0 0 8px;' }, 'Request Sent!'),
       el('p', { style: 'color:#6b7280;margin:0 0 20px;' },
-        `Your interest has been sent to ${count} ${count === 1 ? 'agency' : 'agencies'}. They will be in touch soon!`),
+        'Your interest has been received. Our team will be in touch with you soon!'),
       el('button', { className: 'demo-btn demo-btn-primary', onClick: close }, 'Close')
     );
     return wrap;
@@ -526,6 +643,14 @@ const StikaDemo = (() => {
     const body = document.getElementById('demo-body');
     if (!body) return;
     body.innerHTML = '';
+
+    // Update Header Title based on step
+    const headerTitle = document.querySelector('.demo-header h2');
+    if (headerTitle) {
+      if (state.step === 1) headerTitle.textContent = 'Create Campaign';
+      else if (state.step === 2) headerTitle.textContent = 'Campaign Dashboard';
+      else if (state.step === 3) headerTitle.textContent = 'Submit Campaign';
+    }
 
     // Progress
     body.appendChild(renderProgress());
@@ -553,7 +678,7 @@ const StikaDemo = (() => {
         className: 'demo-btn demo-btn-primary',
         id: 'demo-submit-btn',
         onClick: submit
-      }, 'Send Request');
+      }, 'Submit Campaign');
       nav.appendChild(submitBtn);
     }
     contentWrap.appendChild(nav);
@@ -570,7 +695,7 @@ const StikaDemo = (() => {
     }
     if (state.step === 2) {
       loadLeaflet().then(() => {
-        initMiniMap('demo-minimap');
+        initMiniMap('demo-minimap-premium');
       }).catch(() => {});
     }
   }
@@ -580,6 +705,13 @@ const StikaDemo = (() => {
     if (state.step === 1 && n === 2) {
       if (!state.campaign.name.trim()) {
         alert('Please enter a campaign name.');
+        return;
+      }
+      
+      const c = state.campaign;
+      const minRate = c.rate_type === 'per_hour' ? 15 : 100;
+      if (c.rate_amount < minRate) {
+        alert(`Minimum rate for ${c.rate_type === 'per_hour' ? 'hourly' : 'daily'} campaigns is \u20A6${minRate}.`);
         return;
       }
     }
@@ -595,8 +727,10 @@ const StikaDemo = (() => {
     state.step = n;
     state.error = '';
 
-    // Fetch agencies when entering step 3
-    if (n === 3 && state.agencies.length === 0) fetchAgencies();
+    // Fetch data when entering step 3 (if needed)
+    if (n === 3) {
+      // Logic for step 3 entry
+    }
 
     render();
 
@@ -606,37 +740,14 @@ const StikaDemo = (() => {
   }
 
   // ── API calls ──────────────────────────────────────────────────────
-  function fetchAgencies() {
-    fetch(API_BASE + '/public/')
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(data => {
-        if (data.success && data.agencies) {
-          state.agencies = data.agencies;
-        } else {
-          state.agencies = [];
-          state.error = 'No agencies available at the moment.';
-        }
-        render();
-      })
-      .catch(err => {
-        console.error('Failed to load agencies:', err);
-        state.agencies = [];
-        state.error = 'Could not load agencies. Please try again later.';
-        render();
-      });
-  }
+
 
   function submit() {
     const ct = state.contact;
     state.error = '';
 
     // Validation
-    if (!ct.full_name.trim()) { state.error = 'Name is required.'; render(); return; }
-    if (!ct.email.trim() && !ct.phone.trim()) { state.error = 'Email or phone is required.'; render(); return; }
-    if (state.selectedAgencies.size === 0) { state.error = 'Please select at least one agency.'; render(); return; }
+    if (!ct.phone.trim()) { state.error = 'Phone number is required.'; render(); return; }
     if (ct.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ct.email)) { state.error = 'Enter a valid email address.'; render(); return; }
 
     state.submitting = true;
@@ -649,7 +760,7 @@ const StikaDemo = (() => {
       email: ct.email.trim(),
       phone: ct.phone.trim(),
       message: ct.message.trim(),
-      agency_ids: Array.from(state.selectedAgencies),
+      agency_ids: [],
       campaign_concept: {
         name: c.name,
         type: c.type,
@@ -661,7 +772,10 @@ const StikaDemo = (() => {
         tricycles: c.tricycles,
         rate_type: c.rate_type,
         rate_amount: c.rate_amount,
-        budget: fmtMoney(calcBudget()),
+        verifications: c.verifications,
+        sticker_size: c.sticker_size,
+        sticker_image: c.sticker_preview,
+        budget: fmtMoney(calcBudget().total),
       }
     };
 
@@ -680,7 +794,7 @@ const StikaDemo = (() => {
             body.innerHTML = '';
             body.appendChild(renderProgress());
             const bdy = el('div', { className: 'demo-body' });
-            bdy.appendChild(renderSuccess(data.requests_created || state.selectedAgencies.size));
+            bdy.appendChild(renderSuccess());
             body.appendChild(bdy);
           }
         } else {
@@ -699,7 +813,6 @@ const StikaDemo = (() => {
   function open() {
     // Reset state
     state.step = 1;
-    state.selectedAgencies = new Set();
     state.contact = { full_name: '', email: '', phone: '', message: '' };
     state.error = '';
     state.submitting = false;
